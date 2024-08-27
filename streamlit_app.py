@@ -27,7 +27,7 @@ with st.sidebar:
     simulations = st.sidebar.slider("Number of simulations", 1, 100, 10)
     S = st.sidebar.number_input("Current Asset Price (S)", value=50.00, step=0.01, min_value=0.0, max_value=9999.00, format="%.2f")
     K = st.sidebar.number_input("Strike (K)", value=70.00, step=0.01, min_value=0.0, max_value=9999.00, format="%.2f")
-    rf = st.sidebar.number_input("Risk-Free Interest Rate (r)", value=0.10, step=0.01, min_value=0.0, max_value=9999.00, format="%.2f")
+    r = st.sidebar.number_input("Risk-Free Interest Rate (r)", value=0.10, step=0.01, min_value=0.0, max_value=9999.00, format="%.2f")
 
 # Calculating option payoff
 def option_payoff(option_type, S, K):
@@ -67,15 +67,38 @@ def montecarlo_simulations(s, k, vol, rf, t, num_drifts, num_simulations):
                       yaxis_title='Price') 
     return fig
 
-def print_function(list_of_prices):
-    st.write("Final Prices from Simulations:")
-    st.write(list_of_prices)
-
-
-st.plotly_chart(montecarlo_simulations(S, K, sigma, rf, T, drifts, simulations))
+montecarlo_simulations(S, K, sigma, r, T, drifts, simulations)
 
 col1, col2 = st.columns(2)
 
+def option_pricing(option_type, s, k, vol, rf, t):
+    if option_type == "Call":
+        call_value = 0
+        count = 0
+        for i in range(len(final_prices)):
+            intrinsic_value = max(final_prices[i] - k, 0)  # Using integer index
+            present_value = intrinsic_value * math.exp(-rf * t)
+            call_value += present_value
+            count += 1
+        return call_value / count  # Average the call value over the simulations
+    elif option_type == "Put":
+        put_value = 0
+        count = 0
+        for i in range(len(final_prices)):
+            intrinsic_value = max(k - final_prices[i], 0)  # Using integer index
+            present_value = intrinsic_value * math.exp(-rf * t)
+            put_value += present_value
+            count += 1
+        return put_value / count 
+
 with col1:
-    st.write("Final Prices from Simulations:")
-    st.write(final_prices)
+    st.subheader("Call Value")
+    st.title(f":blue-background[{round(option_pricing('Call', S, K, r, T, sigma), 2)}]")
+
+with col2:
+    st.subheader("Put Value")
+    st.title(f":green-background[{round(option_pricing('Put', S, K, r, T, sigma), 2)}]")
+
+
+st.plotly_chart(montecarlo_simulations(S, K, sigma, r, T, drifts, simulations))
+
