@@ -20,6 +20,7 @@ with st.sidebar:
     st.markdown(f'<a href="{linkedin_url}" target="_blank" style="text-decoration: none; color: inherit;"><img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" width="25" height="25" style="vertical-align: middle; margin-right: 10px;"><a href="{github_url}" target="_blank" style="text-decoration: none; color: inherit;"><img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" width="25" height="25" style="vertical-align: middle; margin-right: 10px;"></a>', unsafe_allow_html=True)
     st.sidebar.write("--------------------------")
 
+# Getting inputs for Monte Carlo model
 with st.sidebar:
     sigma = st.sidebar.slider("Volatility", 0.01, 1.00, 0.1)
     T = st.sidebar.slider("Time to Maturity (years)", 0, 3, 1)
@@ -29,15 +30,9 @@ with st.sidebar:
     K = st.sidebar.number_input("Strike (K)", value=100.00, step=0.01, min_value=0.0, max_value=9999.00, format="%.2f")
     r = st.sidebar.number_input("Risk-Free Interest Rate (r)", value=0.10, step=0.01, min_value=0.0, max_value=9999.00, format="%.2f")
 
-# Calculating option payoff
-def option_payoff(option_type, S, K):
-    if option_type == "Call":
-        return max(S - K, 0)
-    elif option_type == "Put":
-        return max(K - S, 0)
-
 final_prices = []
 
+# Estimating price paths for the underlying asset
 def montecarlo_simulations(s, k, vol, rf, t, num_drifts, num_simulations):
 
     dt = t/num_drifts
@@ -67,10 +62,12 @@ def montecarlo_simulations(s, k, vol, rf, t, num_drifts, num_simulations):
                       yaxis_title='Price') 
     return fig
 
+# Displaying chart of simulations
 montecarlo_simulations(S, K, sigma, r, T, drifts, simulations)
 
 col1, col2 = st.columns(2)
 
+# Pricing calls and puts through Monte Carlo methods
 def montecarlo_pricing(option_type, s, k, vol, rf, t):
     if option_type == "Call":
         call_value = 0
@@ -91,6 +88,7 @@ def montecarlo_pricing(option_type, s, k, vol, rf, t):
             count += 1
         return put_value / count 
 
+# Displaying call and puts values
 with col1:
     st.subheader("Call Value")
     st.title(f":blue-background[{round(montecarlo_pricing('Call', S, K, r, T, sigma), 2)}]")
