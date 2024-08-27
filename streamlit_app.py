@@ -22,7 +22,7 @@ with st.sidebar:
 
 with st.sidebar:
     sigma = st.sidebar.slider("Volatility", 0.01, 1.00, 0.1)
-    T = st.sidebar.slider("Time to Maturity (months)", 0, 36, 12)
+    T = st.sidebar.slider("Time to Maturity (years)", 0, 3, 1)
     drifts = st.sidebar.slider("Time Steps", 1, 756, 252)
     simulations = st.sidebar.slider("Number of simulations", 1, 100, 10)
     S = st.sidebar.number_input("Current Asset Price (S)", value=50.00, step=0.01, min_value=0.0, max_value=9999.00, format="%.2f")
@@ -71,21 +71,21 @@ montecarlo_simulations(S, K, sigma, r, T, drifts, simulations)
 
 col1, col2 = st.columns(2)
 
-def option_pricing(option_type, s, k, vol, rf, t):
+def montecarlo_pricing(option_type, s, k, vol, rf, t):
     if option_type == "Call":
         call_value = 0
         count = 0
         for i in range(len(final_prices)):
-            intrinsic_value = max(final_prices[i] - k, 0)  # Using integer index
+            intrinsic_value = max(final_prices[i] - k, 0)  
             present_value = intrinsic_value * math.exp(-rf * t)
             call_value += present_value
             count += 1
-        return call_value / count  # Average the call value over the simulations
+        return call_value / count  
     elif option_type == "Put":
         put_value = 0
         count = 0
         for i in range(len(final_prices)):
-            intrinsic_value = max(k - final_prices[i], 0)  # Using integer index
+            intrinsic_value = max(k - final_prices[i], 0)
             present_value = intrinsic_value * math.exp(-rf * t)
             put_value += present_value
             count += 1
@@ -93,12 +93,11 @@ def option_pricing(option_type, s, k, vol, rf, t):
 
 with col1:
     st.subheader("Call Value")
-    st.title(f":blue-background[{round(option_pricing('Call', S, K, r, T, sigma), 2)}]")
+    st.title(f":blue-background[{round(montecarlo_pricing('Call', S, K, r, T, sigma), 2)}]")
 
 with col2:
     st.subheader("Put Value")
-    st.title(f":green-background[{round(option_pricing('Put', S, K, r, T, sigma), 2)}]")
-
+    st.title(f":green-background[{round(montecarlo_pricing('Put', S, K, r, T, sigma), 2)}]")
 
 st.plotly_chart(montecarlo_simulations(S, K, sigma, r, T, drifts, simulations))
 
