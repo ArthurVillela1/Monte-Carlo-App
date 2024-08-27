@@ -12,6 +12,14 @@ st.set_page_config(layout="wide")
 st.title("Monte Carlo Option Pricing")
 
 with st.sidebar:
+    st.title("📈 Monte Carlo Model")
+    st.write("`Created by: Arthur Villela`")
+    linkedin_url = "https://www.linkedin.com/in/arthur-villela"
+    github_url ="https://github.com/ArthurVillela1"
+    st.markdown(f'<a href="{linkedin_url}" target="_blank" style="text-decoration: none; color: inherit;"><img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" width="25" height="25" style="vertical-align: middle; margin-right: 10px;"><a href="{github_url}" target="_blank" style="text-decoration: none; color: inherit;"><img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" width="25" height="25" style="vertical-align: middle; margin-right: 10px;"></a>', unsafe_allow_html=True)
+    st.sidebar.write("--------------------------")
+
+with st.sidebar:
     sigma = st.sidebar.slider("Volatility", 0.01, 1.00, 0.1)
     T = st.sidebar.slider("Time to Maturity (months)", 0, 36, 12)
     drifts = st.sidebar.slider("Time Steps", 1, 756, 252)
@@ -44,7 +52,7 @@ def montecarlo_simulations(s, k, vol, rf, t, num_drifts, num_simulations):
     df = pd.DataFrame(prices).T
     df.columns = [f"Simulation {i+1}" for i in range(num_simulations)]
 
-    fig = px.line(df, title="Simulated Price Paths")
+    fig = px.line(df)
         
     fig.update_layout(title=f'Simulated Price Paths',
                       xaxis_title='Time',
