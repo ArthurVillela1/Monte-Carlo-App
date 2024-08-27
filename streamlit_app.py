@@ -42,6 +42,7 @@ def montecarlo_simulations(s, k, vol, rf, t, num_drifts, num_simulations):
 
     dt = t/num_drifts
     prices = []
+    final_list = []
 
     for i in range(num_simulations):
         price_list = []
@@ -50,9 +51,10 @@ def montecarlo_simulations(s, k, vol, rf, t, num_drifts, num_simulations):
             s_copy*= math.exp((rf - 0.5 * vol**2) * dt + vol * math.sqrt(dt) * np.random.normal(0, 1))
             price_list.append(s_copy)
         prices.append(price_list)
+        final_list.append(price_list[-1])
 
     global final_prices
-    final_prices = price_list
+    final_prices = final_list
 
     fig = go.Figure()
     df = pd.DataFrame(prices).T
