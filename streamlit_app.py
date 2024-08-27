@@ -25,8 +25,8 @@ with st.sidebar:
     T = st.sidebar.slider("Time to Maturity (years)", 0, 3, 1)
     drifts = st.sidebar.slider("Time Steps", 1, 756, 252)
     simulations = st.sidebar.slider("Number of simulations", 1, 100, 10)
-    S = st.sidebar.number_input("Current Asset Price (S)", value=50.00, step=0.01, min_value=0.0, max_value=9999.00, format="%.2f")
-    K = st.sidebar.number_input("Strike (K)", value=70.00, step=0.01, min_value=0.0, max_value=9999.00, format="%.2f")
+    S = st.sidebar.number_input("Current Asset Price (S)", value=95.00, step=0.01, min_value=0.0, max_value=9999.00, format="%.2f")
+    K = st.sidebar.number_input("Strike (K)", value=100.00, step=0.01, min_value=0.0, max_value=9999.00, format="%.2f")
     r = st.sidebar.number_input("Risk-Free Interest Rate (r)", value=0.10, step=0.01, min_value=0.0, max_value=9999.00, format="%.2f")
 
 # Calculating option payoff
