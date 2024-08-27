@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import math
 import pandas as pd
 import plotly.express as px
+import statistics
 
 st.set_page_config(layout="wide")
 st.title("Monte Carlo Option Pricing")
@@ -35,8 +36,10 @@ def option_payoff(option_type, S, K):
     elif option_type == "Put":
         return max(K - S, 0)
 
+final_prices = []
+
 def montecarlo_simulations(s, k, vol, rf, t, num_drifts, num_simulations):
-    
+
     dt = t/num_drifts
     prices = []
 
@@ -47,6 +50,9 @@ def montecarlo_simulations(s, k, vol, rf, t, num_drifts, num_simulations):
             s_copy*= math.exp((rf - 0.5 * vol**2) * dt + vol * math.sqrt(dt) * np.random.normal(0, 1))
             price_list.append(s_copy)
         prices.append(price_list)
+
+    global final_prices
+    final_prices = price_list
 
     fig = go.Figure()
     df = pd.DataFrame(prices).T
@@ -59,6 +65,15 @@ def montecarlo_simulations(s, k, vol, rf, t, num_drifts, num_simulations):
                       yaxis_title='Price') 
     return fig
 
+def print_function(list_of_prices):
+    st.write("Final Prices from Simulations:")
+    st.write(list_of_prices)
+
+
 st.plotly_chart(montecarlo_simulations(S, K, sigma, rf, T, drifts, simulations))
 
+col1, col2 = st.columns(2)
 
+with col1:
+    st.write("Final Prices from Simulations:")
+    st.write(final_prices)
