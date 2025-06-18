@@ -9,7 +9,7 @@ import pandas as pd
 import plotly.express as px
 import statistics
 
-st.set_page_config(layout="wide")
+st.set_page_config(layout="wide", initial_sidebar_state="expanded")
 st.title("Monte Carlo Option Pricing")
 
 with st.sidebar:
