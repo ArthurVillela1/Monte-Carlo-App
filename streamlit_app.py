@@ -1,4 +1,5 @@
 import streamlit as st
+st.set_page_config(layout="wide", initial_sidebar_state="expanded")
 import numpy as np
 from scipy.stats import norm
 import seaborn as sn
@@ -9,7 +10,6 @@ import pandas as pd
 import plotly.express as px
 import statistics
 
-st.set_page_config(layout="wide", initial_sidebar_state="expanded")
 st.title("Monte Carlo Option Pricing")
 
 with st.sidebar:
